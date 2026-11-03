@@ -1,0 +1,16 @@
+name = "qr-phishing-demo"
+main = "src/worker.js"
+compatibility_date = "2025-10-01"
+
+# ---------------------------------------------------------------------------
+# A KV namespace stores the captured submissions. Create it once with:
+#     npx wrangler kv namespace create CAPTURES
+# then paste the returned id below (replacing PASTE_KV_ID_HERE).
+# ---------------------------------------------------------------------------
+kv_namespaces = [
+  { binding = "CAPTURES", id = "PASTE_KV_ID_HERE" }
+]
+
+# The admin password is read from an env var. Set it as a secret (recommended):
+#     npx wrangler secret put ADMIN_PASSWORD
+# If you skip this, the Worker falls back to "steer-demo-2026" — change it!

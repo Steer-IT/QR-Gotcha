@@ -1,0 +1,13 @@
+{
+  "name": "qr-phishing-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "QR phishing (quishing) awareness demo for security talks — Steer IT / Dragon Defence",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}
