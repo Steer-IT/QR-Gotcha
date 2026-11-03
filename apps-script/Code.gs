@@ -14,7 +14,7 @@
  * The sheet fills itself — the first submission creates the "Captures" tab.
  */
 
-var ADMIN_KEY  = 'change-this-key';   // must match ADMIN_KEY in admin.html
+var ADMIN_KEY  = 'gotcha-steer-7f3a9c';   // must match ADMIN_KEY in admin.html
 var SHEET_NAME = 'Captures';
 var HEADERS = ['time','email','ip','geo','os','browser','device','screen','viewport','lang','tz','platform','touch','ua'];
 
