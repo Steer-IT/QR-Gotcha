@@ -18,30 +18,33 @@ that sends you the emails.
 ## How it fits together
 
 ```
-GitHub Pages (static)            Google Apps Script (free)
-┌────────────────────┐   POST    ┌───────────────────────────┐
-│ index.html  (lure) │ ───────►  │ doPost → MailApp.sendEmail │ → your inbox
-│ admin.html (QR)    │           └───────────────────────────┘
+GitHub Pages (static)          Web3Forms (free email relay)
+┌────────────────────┐   POST   ┌──────────────────────────┐
+│ index.html  (lure) │ ──────►  │ api.web3forms.com/submit │ → your inbox
+│ admin.html (QR)    │          └──────────────────────────┘
 └────────────────────┘
 ```
 
+GitHub itself can't send the email (a static site has no server, and putting a token in the
+public page to make GitHub do it would be insecure and auto-revoked). So the page posts straight
+to a lightweight email relay. The default is **Web3Forms** — no Google, no account to manage.
+
 ## Setup
 
-### 1. The collector (Google Apps Script) — ~2 minutes
+### 1. Get an email key (Web3Forms) — ~1 minute, no Google
 
-1. Go to **script.google.com → New project**.
-2. Delete the sample, paste in `apps-script/Code.gs`.
-3. (Optional) set `NOTIFY_EMAIL` — leave it blank and it emails the Google account you deploy under.
-4. **Deploy → New deployment → Web app**: *Execute as* **Me**, *Who has access* **Anyone**. Authorise it (it asks for permission to send email as you).
-5. Copy the **Web app URL** (ends in `/exec`).
+1. Go to **web3forms.com**, enter the email address you want the captures sent to, and submit.
+2. The **access key** arrives in that inbox.
+3. Open `index.html` and paste it into `WEB3FORMS_KEY`. That's the only edit.
 
-### 2. The pages
+That's it — every submission is now emailed to you. (The access key is meant to live in the
+page; the worst anyone can do with it is send spam to that inbox, and you can rotate it.)
 
-In **both** `index.html` and `admin.html`, set `SCRIPT_URL` to that `/exec` URL.
-(`admin.html` only needs it so the "View lure page" link and QR point at the right place — the
-QR works regardless.)
+*Prefer Google?* Instead of a Web3Forms key, deploy `apps-script/Code.gs` (script.google.com →
+paste → Deploy as Web app, *Execute as Me* / *Anyone*), and put its `/exec` URL in `SCRIPT_URL`
+in `index.html`, leaving `WEB3FORMS_KEY` blank.
 
-### 3. Publish on GitHub Pages
+### 2. Publish on GitHub Pages
 
 Repo **Settings → Pages → Build and deployment → Deploy from a branch → `main` / `/root` → Save.**
 After a minute it's live at `https://steer-it.github.io/QR-Gotcha/`.
@@ -61,8 +64,8 @@ directly.
 
 ## Notes
 
-- Consumer Gmail sends up to ~100 emails/day via Apps Script (Workspace ~1,500). Fine for a
-  talk; if you expect a bigger crowd, say so and the script can batch into a single digest.
+- Web3Forms' free tier covers ~250 submissions/month — plenty for a talk. (If you use the Apps
+  Script route instead, consumer Gmail allows ~100 emails/day, Workspace ~1,500.)
 - Nothing is stored — no sheet, no database. When the talk's over, there's nothing to wipe.
 
 ## Alternative: self-hosted PHP
