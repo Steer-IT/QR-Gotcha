@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Awareness Console</title>
+<title>Presenter QR</title>
 <style>
 
   :root{
@@ -123,52 +123,23 @@
 </head>
 <body class="adm">
 <div class="awrap">
-    <header class="bar">
-      <div class="logo"><span class="dot"></span>Dragon Defence <span class="tag">Awareness Console</span></div>
-      <a class="ghost" href="index.html">Back to site</a>
-    </header>
-
-    <div class="grid">
-      <aside class="box">
-        <h3>Your demo QR code</h3>
-        <div id="qr"></div>
-        <div class="urlrow">
-          <input id="lureUrl" type="text" value="">
-          <button class="btn" id="makeQr" type="button">Update</button>
-        </div>
-        <p class="help">Point your projector at this QR, or display the link. Audience phones that scan it land on the lure page. Set the public address of this page above if you're testing locally.</p>
-        <div class="urlrow" style="margin-top:10px">
-          <button class="btn ghost" id="copyUrl" type="button" style="flex:1">Copy link</button>
-          <button class="btn ghost" id="exportBtn" type="button" style="flex:1">Export CSV</button>
-        </div>
-        <div style="margin-top:10px">
-          <span class="confirm" id="clearWrap">
-            <button class="btn red" id="clearBtn" type="button">Clear all data</button>
-          </span>
-        </div>
-        <p class="help">Wipe captures between sessions so no one's email lingers on the server.</p>
-      </aside>
-
-      <main>
-        <div class="stats" id="stats"></div>
-        <div class="chips" id="chips"></div>
-        <div class="toolbar">
-          <strong style="font-size:14px">Live captures</strong>
-          <span class="live"><span class="pulse"></span> auto-refreshing</span>
-        </div>
-        <div class="tablewrap">
-          <table>
-            <thead><tr>
-              <th>Time</th><th>Email</th><th>Device</th><th>OS</th><th>Browser</th><th>IP</th><th>Screen</th><th>Lang</th><th>Time zone</th><th>User agent</th>
-            </tr></thead>
-            <tbody id="rows"><tr><td colspan="10" class="empty">Waiting for the first scan…</td></tr></tbody>
-          </table>
-        </div>
-      </main>
+  <header class="bar">
+    <div class="logo"><span class="dot"></span>Dragon Defence <span class="tag">Presenter</span></div>
+    <a class="ghost" href="index.html">View lure page</a>
+  </header>
+  <div class="box" style="max-width:440px;margin:0 auto">
+    <h3>Your demo QR code</h3>
+    <div id="qr"></div>
+    <div class="urlrow">
+      <input id="lureUrl" type="text" value="">
+      <button class="btn" id="makeQr" type="button">Update</button>
+    </div>
+    <p class="help">Point your projector at this QR, or share the link. Each scan lands on the lure page, and every submission is emailed straight to you — just watch your inbox.</p>
+    <div class="urlrow" style="margin-top:10px">
+      <button class="btn ghost" id="copyUrl" type="button" style="flex:1">Copy link</button>
     </div>
   </div>
-
-  
+</div>
 <script>//---------------------------------------------------------------------
 //
 // QR Code Generator for JavaScript
@@ -2470,13 +2441,6 @@ var qrcode = function() {
 window.qrcode=qrcode;</script>
 <script>
 (function(){
-  /* ============ CONFIG ============
-     1) SCRIPT_URL  — your Apps Script Web App URL (ends in /exec)
-     2) ADMIN_KEY   — must match ADMIN_KEY in the Apps Script */
-  var SCRIPT_URL = 'PASTE_YOUR_APPS_SCRIPT_URL_HERE';
-  var ADMIN_KEY  = 'gotcha-steer-7f3a9c';
-  /* ================================ */
-  var items=[];
   var base=location.href.replace(/admin\.html.*$/i,'').replace(/[#?].*$/,'');
   var urlInput=document.getElementById('lureUrl');urlInput.value=base;
   var qrBox=document.getElementById('qr');
@@ -2484,7 +2448,7 @@ window.qrcode=qrcode;</script>
     qrBox.textContent='';var val=urlInput.value.trim()||base;
     try{var qr=qrcode(0,'M');qr.addData(val);qr.make();
       qrBox.innerHTML=qr.createSvgTag({cellSize:6,margin:2,scalable:true});
-      var s=qrBox.querySelector('svg');if(s){s.style.width='220px';s.style.height='220px';}
+      var s=qrBox.querySelector('svg');if(s){s.style.width='240px';s.style.height='240px';}
     }catch(e){var d=document.createElement('div');d.style.color='#333';d.style.fontSize='12px';
       d.textContent='Could not render QR — share the link below.';qrBox.appendChild(d);}
   }
@@ -2496,84 +2460,6 @@ window.qrcode=qrcode;</script>
         setTimeout(function(){self.textContent='Copy link';},1400);}).catch(function(){urlInput.select();});
     }else urlInput.select();
   });
-  function jsonp(params,cb){
-    if(!SCRIPT_URL||SCRIPT_URL.indexOf('PASTE')>=0){cb(new Error('not-configured'));return;}
-    var name='__qrcb'+Math.random().toString(36).slice(2),s=document.createElement('script'),to;
-    window[name]=function(data){clearTimeout(to);try{delete window[name];}catch(e){}s.remove();cb(null,data);};
-    to=setTimeout(function(){try{delete window[name];}catch(e){}s.remove();cb(new Error('timeout'));},12000);
-    var q=Object.keys(params).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(params[k]);}).join('&');
-    s.onerror=function(){clearTimeout(to);try{delete window[name];}catch(e){}s.remove();cb(new Error('neterr'));};
-    s.src=SCRIPT_URL+'?'+q+'&callback='+name;document.body.appendChild(s);
-  }
-  function toCsv(){
-    var cols=['time','email','ip','geo','os','browser','device','screen','viewport','lang','tz','platform','touch','ua'];
-    var esc=function(v){v=(v==null?'':String(v)).replace(/"/g,'""');return '"'+v+'"';};
-    var lines=[cols.join(',')];
-    items.forEach(function(r){lines.push(cols.map(function(c){return c==='touch'?(r.touch?'yes':'no'):esc(r[c]);}).join(','));});
-    return lines.join('\n');
-  }
-  document.getElementById('exportBtn').addEventListener('click',function(){
-    var blob=new Blob([toCsv()],{type:'text/csv'}),a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);a.download='qr-gotcha-captures.csv';
-    document.body.appendChild(a);a.click();
-    setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1000);
-  });
-  var clearWrap=document.getElementById('clearWrap');
-  function resetClear(){clearWrap.textContent='';
-    var b=document.createElement('button');b.className='btn red';b.textContent='Clear all data';
-    b.addEventListener('click',askClear);clearWrap.appendChild(b);}
-  function askClear(){clearWrap.textContent='';
-    var q=document.createElement('span');q.style.fontSize='13px';q.style.color='#fca5a5';q.textContent='Delete everything? ';
-    var yes=document.createElement('button');yes.className='btn red';yes.textContent='Yes, wipe';
-    var no=document.createElement('button');no.className='btn ghost';no.style.marginLeft='6px';no.textContent='Cancel';
-    clearWrap.appendChild(q);clearWrap.appendChild(yes);clearWrap.appendChild(no);
-    no.addEventListener('click',resetClear);
-    yes.addEventListener('click',function(){yes.textContent='Wiping…';
-      jsonp({key:ADMIN_KEY,action:'clear'},function(err){resetClear();load();});});}
-  document.getElementById('clearBtn').addEventListener('click',askClear);
-  function pill(os){var c=(os||'').toLowerCase();
-    var cls=c.indexOf('ios')>=0?'ios':c.indexOf('android')>=0?'android':c.indexOf('windows')>=0?'windows':c.indexOf('mac')>=0?'macos':'';
-    var sp=document.createElement('span');sp.className='pill '+cls;sp.textContent=os||'—';return sp;}
-  function td(t){var d=document.createElement('td');d.textContent=(t==null||t==='')?'—':t;return d;}
-  function render(list){
-    var rows=list.slice().reverse(),tbody=document.getElementById('rows');tbody.textContent='';
-    if(!rows.length){var tr=document.createElement('tr'),c=document.createElement('td');
-      c.colSpan=10;c.className='empty';c.textContent='Waiting for the first scan…';tr.appendChild(c);tbody.appendChild(tr);
-    }else{rows.forEach(function(r){var tr=document.createElement('tr');
-      var t='';try{t=new Date(r.time).toLocaleTimeString();}catch(e){t=r.time||'';}
-      tr.appendChild(td(t));
-      var em=td(r.email);em.className='email';tr.appendChild(em);
-      tr.appendChild(td(r.device));
-      var osd=document.createElement('td');osd.appendChild(pill(r.os));tr.appendChild(osd);
-      tr.appendChild(td(r.browser));tr.appendChild(td(r.ip));tr.appendChild(td(r.screen));
-      tr.appendChild(td(r.lang));tr.appendChild(td(r.tz));
-      var u=document.createElement('td'),sp=document.createElement('span');sp.className='ua';
-      sp.textContent=r.ua||'—';sp.title='click to expand';
-      sp.addEventListener('click',function(){sp.classList.toggle('open');});u.appendChild(sp);tr.appendChild(u);
-      tbody.appendChild(tr);});}
-    renderStats(rows);
-  }
-  function renderStats(list){
-    var emails={},os={},br={};
-    list.forEach(function(r){if(r.email)emails[String(r.email).toLowerCase()]=1;
-      os[r.os||'Unknown']=(os[r.os||'Unknown']||0)+1;br[r.browser||'Unknown']=(br[r.browser||'Unknown']||0)+1;});
-    var statsEl=document.getElementById('stats');statsEl.textContent='';
-    [['Captured',list.length],['Unique emails',Object.keys(emails).length]].forEach(function(st){
-      var d=document.createElement('div');d.className='stat';var b=document.createElement('b');b.textContent=st[1];
-      var sp=document.createElement('span');sp.textContent=st[0];d.appendChild(b);d.appendChild(sp);statsEl.appendChild(d);});
-    var chips=document.getElementById('chips');chips.textContent='';
-    function addChips(obj){Object.keys(obj).sort(function(a,b){return obj[b]-obj[a];}).forEach(function(k){
-      var c=document.createElement('span');c.className='chip';var b=document.createElement('b');b.textContent=obj[k];
-      c.appendChild(b);c.appendChild(document.createTextNode(' '+k));chips.appendChild(c);});}
-    addChips(os);addChips(br);
-  }
-  function load(){
-    jsonp({key:ADMIN_KEY,action:'list'},function(err,data){
-      if(err||!data||data.error){return;}
-      items=data.items||[];render(items);
-    });
-  }
-  load();setInterval(load,4000);
 })();
 </script>
 
