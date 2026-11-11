@@ -36,6 +36,9 @@
   .connect:active{transform:translateY(1px)}
   .fine{margin:16px 2px 0;font-size:11px;color:var(--muted);text-align:center;line-height:1.45}
   .brandline{margin-top:24px;text-align:center;font-size:11px;color:var(--muted)}
+  .brandlogo{display:block;height:auto;margin:0 auto}
+  .brandlogo.lure{width:132px;margin-bottom:22px}
+  .reveal .brandlogo{width:172px;margin:10px auto 2px;filter:drop-shadow(0 3px 14px rgba(0,0,0,.55))}
 
   /* ---------- GOTCHA reveal ---------- */
   .reveal{position:fixed;inset:0;z-index:50;background:linear-gradient(160deg,#1a0505,#450a0a 55%,#140303);color:#fff;overflow-y:auto;display:none;padding:calc(env(safe-area-inset-top,0px) + 34px) 0 48px}
@@ -125,6 +128,7 @@
 
 <div class="wrap">
   <div class="portal">
+    <img class="brandlogo lure" src="dragon-defence.png" alt="Dragon Defence — Cyber Security Solutions" width="640" height="732">
     <div class="signal">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0 1 14 0M8.5 16.1a6 6 0 0 1 7 0M2 8.82a15 15 0 0 1 20 0"/><line x1="12" y1="20" x2="12" y2="20"/></svg>
       <span>Not connected · Sign in to continue</span>
@@ -189,7 +193,8 @@
     </div>
 
     <p class="calm">This was a controlled awareness exercise run by <strong>Steer IT Solutions</strong>. Nothing was sent anywhere — the details above are only shown to demonstrate the point, and will be deleted after the session.</p>
-    <p class="brandline">Dragon Defence · Security Awareness</p>
+    <img class="brandlogo rev" src="dragon-defence.png" alt="Dragon Defence — Cyber Security Solutions" width="640" height="732">
+    <p class="brandline">Security Awareness Exercise</p>
   </div>
 </div>
 
